@@ -1,47 +1,8 @@
 {
   "builders": [{
-    "type": "qemu",
-    "iso_url": "{{user `mirror`}}/16.04/ubuntu-16.04.1-server-amd64.iso",
-    "iso_checksum": "{{user `iso_checksum`}}",
-    "iso_checksum_type": "{{user `iso_checksum_type`}}",
-    "output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
-    "vm_name": "packer-ubuntu-16.04-amd64",
-    "disk_size": "{{user `disk_size`}}",
-    "headless": "{{user `headless`}}",
-    "http_directory": "http",
-    "boot_wait": "5s",
-    "boot_command": [
-      "<enter><wait>",
-      "<f6><esc>",
-      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-      "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-      "<bs><bs><bs>",
-      "/install/vmlinuz ",
-      "initrd=/install/initrd.gz ",
-      "net.ifnames=0 ",
-      "auto-install/enable=true ",
-      "debconf/priority=critical ",
-      "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/ubuntu-16.04/preseed.cfg ",
-      "<enter>"
-    ],
-    "ssh_timeout": "{{user `ssh_timeout`}}",
-    "ssh_username": "vagrant",
-    "ssh_password": "vagrant",
-    "shutdown_command": "sudo systemctl poweroff",
-    "qemuargs": [
-      ["-m", "{{user `memory`}}"],
-      ["-smp", "{{user `cpus`}}"]
-    ]
-  }, {
     "type": "virtualbox-iso",
     "guest_os_type": "Ubuntu_64",
-    "iso_url": "{{user `mirror`}}/16.04/ubuntu-16.04.1-server-amd64.iso",
+    "iso_url": "{{user `mirror`}}/16.04/ubuntu-16.04.2-server-amd64.iso",
     "iso_checksum": "{{user `iso_checksum`}}",
     "iso_checksum_type": "{{user `iso_checksum_type`}}",
     "output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
@@ -81,7 +42,7 @@
   }, {
     "type": "vmware-iso",
     "guest_os_type": "ubuntu-64",
-    "iso_url": "{{user `mirror`}}/16.04/ubuntu-16.04.1-server-amd64.iso",
+    "iso_url": "{{user `mirror`}}/16.04/ubuntu-16.04.2-server-amd64.iso",
     "iso_checksum": "{{user `iso_checksum`}}",
     "iso_checksum_type": "{{user `iso_checksum_type`}}",
     "output_directory": "output-ubuntu-16.04-amd64-{{build_type}}",
@@ -125,6 +86,7 @@
       "scripts/ubuntu/apt.sh",
       "scripts/ubuntu/virtualbox.sh",
       "scripts/ubuntu/vmware.sh",
+      "scripts/ubuntu/python.sh",
       "scripts/common/vagrant.sh",
       "scripts/common/sshd.sh",
       "scripts/ubuntu/cleanup.sh",
@@ -134,17 +96,42 @@
   "post-processors": [{
     "type": "vagrant",
     "compression_level": "{{user `compression_level`}}",
-    "output": "ubuntu-16.04-amd64-{{.Provider}}.box"
+    "output": "ubuntu-16.04-amd64-{{.Provider}}.box",
+    "only": ["virtualbox-iso"]
+  },
+  {
+    "type": "vsphere",
+    "cluster": "{{user `cluster`}}",
+    "datacenter": "{{user `datacenter`}}",
+    "datastore": "{{user `datastore`}}",
+    "host": "{{user `host`}}",
+    "username": "{{user `username`}}",
+    "password": "{{user `password`}}",
+    "vm_name": "{{user `vm_name`}}",
+    "disk_mode": "{{user `disk_mode`}}",
+    "insecure": "{{user `insecure`}}",
+    "vm_network": "{{user `network`}}",
+    "only": ["vmware-iso"]
   }],
   "variables": {
     "compression_level": "6",
     "cpus": "1",
     "disk_size": "40000",
     "headless": "false",
-    "iso_checksum": "29a8b9009509b39d542ecb229787cdf48f05e739a932289de9e9858d7c487c80",
+    "iso_checksum": "737ae7041212c628de5751d15c3016058b0e833fdc32e7420209b76ca3d0a535",
     "iso_checksum_type": "sha256",
     "memory": "512",
     "mirror": "http://releases.ubuntu.com",
-    "ssh_timeout": "60m"
+    "ssh_timeout": "60m",
+    "cluster": "HA",
+    "datacenter": "Vancouver",
+    "datastore": "sav_van_primary",
+    "host": "10.2.85.10",
+    "username": "",
+    "password": "",
+    "vm_name": "ubuntu1604-{{isotime \"2016-01-02\"}}",
+    "disk_mode": "thin",
+    "insecure": "true",
+    "network": "193-sav-10.2.35.0%2f24"
   }
 }

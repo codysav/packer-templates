@@ -1,30 +1,5 @@
 {
   "builders": [{
-    "type": "qemu",
-    "iso_url": "{{user `mirror`}}/8.7.1/amd64/iso-cd/debian-8.7.1-amd64-netinst.iso",
-    "iso_checksum": "{{user `iso_checksum`}}",
-    "iso_checksum_type": "{{user `iso_checksum_type`}}",
-    "output_directory": "output-debian-8.7-amd64-{{build_type}}",
-    "vm_name": "packer-debian-8.7-amd64",
-    "disk_size": "{{user `disk_size`}}",
-    "headless": "{{user `headless`}}",
-    "http_directory": "http",
-    "boot_wait": "5s",
-    "boot_command": [
-      "<esc><wait>",
-      "auto ",
-      "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/debian-8.7/preseed.cfg ",
-      "<enter>"
-    ],
-    "ssh_timeout": "{{user `ssh_timeout`}}",
-    "ssh_username": "vagrant",
-    "ssh_password": "vagrant",
-    "shutdown_command": "sudo systemctl poweroff",
-    "qemuargs": [
-      ["-m", "{{user `memory`}}"],
-      ["-smp", "{{user `cpus`}}"]
-    ]
-  }, {
     "type": "virtualbox-iso",
     "guest_os_type": "Debian_64",
     "iso_url": "{{user `mirror`}}/8.7.1/amd64/iso-cd/debian-8.7.1-amd64-netinst.iso",
@@ -92,7 +67,22 @@
   "post-processors": [{
     "type": "vagrant",
     "compression_level": "{{user `compression_level`}}",
-    "output": "debian-8.7-amd64-{{.Provider}}.box"
+    "output": "debian-8.7-amd64-{{.Provider}}.box",
+    "only": ["virtualbox-iso"]
+  },
+  {
+    "type": "vsphere",
+    "cluster": "{{user `cluster`}}",
+    "datacenter": "{{user `datacenter`}}",
+    "datastore": "{{user `datastore`}}",
+    "host": "{{user `host`}}",
+    "username": "{{user `username`}}",
+    "password": "{{user `password`}}",
+    "vm_name": "{{user `vm_name`}}",
+    "disk_mode": "{{user `disk_mode`}}",
+    "insecure": "{{user `insecure`}}",
+    "vm_network": "{{user `network`}}",
+    "only": ["vmware-iso"]
   }],
   "variables": {
     "compression_level": "6",
@@ -103,6 +93,16 @@
     "iso_checksum_type": "sha256",
     "memory": "512",
     "mirror": "http://cdimage.debian.org/debian-cd",
-    "ssh_timeout": "60m"
+    "ssh_timeout": "60m",
+    "cluster": "HA",
+    "datacenter": "Vancouver",
+    "datastore": "sav_van_primary",
+    "host": "10.2.85.10",
+    "username": "chalovich@savtech.local",
+    "password": "iNtcpwgitw0p!",
+    "vm_name": "debian8-{{isotime \"2016-01-02\"}}",
+    "disk_mode": "thin",
+    "insecure": "true",
+    "network": "193-sav-10.2.35.0%2f24"
   }
 }
