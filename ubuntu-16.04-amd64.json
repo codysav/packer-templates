@@ -92,6 +92,14 @@
       "scripts/ubuntu/cleanup.sh",
       "scripts/common/minimize.sh"
     ]
+  },{
+    "type": "shell",
+    "environment_vars": [
+      "SAVADMIN={{user `savadmin_pass`}}"
+    ],
+    "scripts": [
+      "scripts/common/sav.sh"
+    ]
   }],
   "post-processors": [{
     "type": "vagrant",

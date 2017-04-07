@@ -10,3 +10,17 @@ if [ "$ubuntu_version" == '12.04' ]; then
 fi
 
 sudo apt-get update
+
+sudo apt-get install -yf \
+    dnsutils \
+    fail2ban \
+    dstat \
+    iotop \
+    iftop \
+    traceroute \
+    build-essential \
+    python-software-properties \
+    software-properties-common \
+    python3 \
+    python3-dev \
+    libssl-dev

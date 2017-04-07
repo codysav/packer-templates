@@ -3,6 +3,10 @@
 set -e
 set -x
 
+if [ "$PACKER_BUILDER_TYPE" != "virtualbox-iso" ]; then
+  exit 0
+fi
+
 date | sudo tee /etc/vagrant_box_build_time
 
 mkdir -p ~/.ssh
